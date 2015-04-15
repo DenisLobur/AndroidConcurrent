@@ -138,12 +138,13 @@ public class PlayPingPong implements Runnable {
             // @@ TODO - you fill in here.
             Message msg = new Message();
             msg.obj = reqMsg.getTarget();
-            msg.setTarget((Handler)reqMsg.obj);
+            msg.setTarget((Handler) reqMsg.obj);
 
             // Return control to the Handler in the other
             // HandlerThread, which is the "target" of the msg
             // parameter.
             // @@ TODO - you fill in here.
+
 
             return true;
         }
@@ -171,10 +172,14 @@ public class PlayPingPong implements Runnable {
        
         // Create the ping and pong threads.
         // @@ TODO - you fill in here.
+        PingPongThread pingThread = new PingPongThread(PingPong.PING);
+        PingPongThread pongThread = new PingPongThread(PingPong.PONG);
 
         // Start ping and pong threads, which cause their Looper to
         // loop.
         // @@ TODO - you fill in here.
+        pingThread.start();
+        pongThread.start();
 
         // Barrier synchronization to wait for all work to be done
         // before exiting play().

@@ -1,15 +1,15 @@
 package vandy.mooc;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -54,18 +54,20 @@ public class MainActivity extends LifecycleLoggingActivity {
         // Always call super class for necessary
         // initialization/implementation.
         // @@ TODO -- you fill in here.
+    	super.onCreate(savedInstanceState);
 
         // Set the default layout.
         // @@ TODO -- you fill in here.
-
+    	setContentView(R.layout.main_activity);
         // Cache the EditText that holds the urls entered by the user
         // (if any).
         // @@ TODO -- you fill in here.
+    	mUrlEditText = (EditText)findViewById(R.id.url);
     }
 
     /**
      * Called by the Android Activity framework when the user clicks
-     * the "Download Image" button.
+     * the "Find Address" button.
      *
      * @param view The view.
      */
@@ -81,12 +83,13 @@ public class MainActivity extends LifecycleLoggingActivity {
             // it's an Intent that's implemented by the
             // DownloadImageActivity.
             // @@ TODO - you fill in here.
-
+            Intent intent = makeDownloadImageIntent(getUrl());
             // Start the Activity associated with the Intent, which
             // will download the image and then return the Uri for the
             // downloaded image file via the onActivityResult() hook
             // method.
             // @@ TODO -- you fill in here.
+            startActivityForResult(intent, DOWNLOAD_IMAGE_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,19 +108,20 @@ public class MainActivity extends LifecycleLoggingActivity {
         // Check if the started Activity completed successfully.
         // @@ TODO -- you fill in here, replacing true with the right
         // code.
-        if (true) {
+        if (requestCode == DOWNLOAD_IMAGE_REQUEST) {
             // Check if the request code is what we're expecting.
             // @@ TODO -- you fill in here, replacing true with the
             // right code.
-            if (true) {
+            if (resultCode == RESULT_OK) {
                 // Call the makeGalleryIntent() factory method to
                 // create an Intent that will launch the "Gallery" app
                 // by passing in the path to the downloaded image
                 // file.
                 // @@ TODO -- you fill in here.
-
+            	Intent intent = makeGalleryIntent(data.getData().toString());
                 // Start the Gallery Activity.
                 // @@ TODO -- you fill in here.
+            	startActivity(intent);
             }
         }
         // Check if the started Activity did not complete successfully
@@ -125,7 +129,8 @@ public class MainActivity extends LifecycleLoggingActivity {
         // download contents at the given URL.
         // @@ TODO -- you fill in here, replacing true with the right
         // code.
-        else if (true) {
+        else if (requestCode != DOWNLOAD_IMAGE_REQUEST) {
+        	Toast.makeText(this, "DownloadImageActivity started with wrong request", Toast.LENGTH_SHORT).show();
         }
     }    
 
@@ -138,7 +143,9 @@ public class MainActivity extends LifecycleLoggingActivity {
         // the image.
     	// TODO -- you fill in here, replacing "null" with the proper
     	// code.
-        return null;
+    	Intent galleryIntent = new Intent(Intent.ACTION_VIEW);
+    	galleryIntent.setDataAndType(Uri.fromFile(new File(pathToImageFile)), "image/*");
+        return galleryIntent;
     }
 
     /**
@@ -149,7 +156,7 @@ public class MainActivity extends LifecycleLoggingActivity {
         // Create an intent that will download the image from the web.
     	// TODO -- you fill in here, replacing "null" with the proper
     	// code.
-        return null;
+        return new Intent(Intent.ACTION_WEB_SEARCH, url);
     }
 
     /**
@@ -170,7 +177,7 @@ public class MainActivity extends LifecycleLoggingActivity {
         // toast if the URL is invalid.
         // @@ TODO -- you fill in here, replacing "true" with the
         // proper code.
-        if (true)
+        if ((url.toString().startsWith("http://") || url.toString().startsWith("https://")) && url.toString().endsWith(".png"))
             return url;
         else {
             Toast.makeText(this,

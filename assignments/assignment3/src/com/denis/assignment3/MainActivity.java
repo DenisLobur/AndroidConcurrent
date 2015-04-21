@@ -2,6 +2,8 @@ package com.denis.assignment3;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +42,7 @@ public class MainActivity extends Activity implements RetainFragment.ICallback, 
         progressBar = (ProgressBar)findViewById(R.id.progress);
         enterUrlEditText = (EditText)findViewById(R.id.enter_url);
         imageHolder = (ImageView)findViewById(R.id.image_holder);
+        imageHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
         download = (Button)findViewById(R.id.download_btn);
         download.setOnClickListener(this);
         cancel = (Button)findViewById(R.id.cancel_btn);
@@ -55,7 +58,8 @@ public class MainActivity extends Activity implements RetainFragment.ICallback, 
         switch (v.getId()) {
             case R.id.download_btn:
                 Log.d(TAG, "Download click");
-                    presenter.extractUrl(enterUrlEditText.getText().toString());
+                    Uri uri = presenter.extractUrl(enterUrlEditText.getText().toString());
+                    fragment.startAsyncDownload(uri);
                 break;
             case R.id.cancel_btn:
                 Log.d(TAG, "Cancel click");
@@ -63,6 +67,8 @@ public class MainActivity extends Activity implements RetainFragment.ICallback, 
                 break;
             case R.id.filter_btn:
                 Log.d(TAG, "Filter click");
+                Uri uri2 = presenter.extractUrl(enterUrlEditText.getText().toString());
+                fragment.startAsyncFilter(uri2);
 
                 break;
         }
@@ -76,6 +82,7 @@ public class MainActivity extends Activity implements RetainFragment.ICallback, 
     @Override
     public void onProgressUpdate(int percent) {
         Log.d(TAG, "onProgressUpdate " + percent + "%");
+        progressBar.setProgress(percent);
     }
 
     @Override
@@ -84,8 +91,9 @@ public class MainActivity extends Activity implements RetainFragment.ICallback, 
     }
 
     @Override
-    public void onPostExecute() {
+    public void onPostExecute(Bitmap bitmap) {
         Log.d(TAG, "onPostExecute");
+        imageHolder.setImageBitmap(bitmap);
     }
 
 

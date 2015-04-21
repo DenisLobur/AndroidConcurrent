@@ -28,9 +28,8 @@ public class Presenter {
 
         // Do a sanity check to ensure the URL is valid, popping up a
         // toast if the URL is invalid.
-        // @@ TODO -- you fill in here, replacing "true" with the
         // proper code.
-        if ((url.toString().startsWith("http://") || url.toString().startsWith("https://")) && url.toString().endsWith(".png"))
+        if ((url.toString().startsWith("http://") || url.toString().startsWith("https://")))
             return url;
         else {
             Utils.showToast(mContext, "Invalid URL");

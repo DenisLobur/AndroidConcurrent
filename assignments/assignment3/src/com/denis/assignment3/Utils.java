@@ -57,16 +57,14 @@ public class Utils {
                                       Uri pathToImageFile) {
         Bitmap grayScaleImage = null;
 
-        try (InputStream inputStream = new FileInputStream(pathToImageFile.toString())) {
-            Bitmap originalImage =
-                    BitmapFactory.decodeStream(inputStream);
+        try (InputStream inputStream = new FileInputStream(pathToImageFile.getPath())) {
+            Bitmap originalImage = BitmapFactory.decodeStream(inputStream);
 
             // Bail out of we get an invalid bitmap.
             if (originalImage == null)
                 return null;
 
-            grayScaleImage =
-                    originalImage.copy(originalImage.getConfig(),
+            grayScaleImage = originalImage.copy(originalImage.getConfig(),
                             true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,28 +82,18 @@ public class Utils {
 
                 // Check if the pixel is transparent in the original
                 // by checking if the alpha is 0
-                if (hasTransparent
-                        && ((grayScaleImage.getPixel(j, i) & 0xff000000) >> 24) == 0) {
+                if (hasTransparent && ((grayScaleImage.getPixel(j, i) & 0xff000000) >> 24) == 0) {
                     continue;
                 }
 
                 // Convert the pixel to grayscale.
                 int pixel = grayScaleImage.getPixel(j, i);
-                int grayScale =
-                        (int) (Color.red(pixel) * .299
-                                + Color.green(pixel) * .587
-                                + Color.blue(pixel) * .114);
-                grayScaleImage.setPixel(j, i,
-                        Color.rgb(grayScale, grayScale, grayScale)
-                );
+                int grayScale = (int) (Color.red(pixel) * .299 + Color.green(pixel) * .587 + Color.blue(pixel) * .114);
+                grayScaleImage.setPixel(j, i, Color.rgb(grayScale, grayScale, grayScale));
             }
         }
 
-        return Utils.createDirectoryAndSaveFile
-                (context,
-                        grayScaleImage,
-                        // Name of the image file that we're filtering.
-                        pathToImageFile.toString());
+        return Utils.createDirectoryAndSaveFile(context, grayScaleImage, pathToImageFile.toString());
     }
 
     /**
@@ -122,8 +110,7 @@ public class Utils {
                                     Uri url) {
         try {
             if (!isExternalStorageWritable()) {
-                Log.d(TAG,
-                        "external storage is not writable");
+                Log.d(TAG, "external storage is not writable");
                 return null;
             }
 
@@ -136,31 +123,26 @@ public class Utils {
             // If we're offline, open the image in our resources.
             if (DOWNLOAD_OFFLINE) {
                 // Get a stream from the image resource.
-                inputStream =
-                        context.getResources().openRawResource(OFFLINE_TEST_IMAGE);
+                inputStream = context.getResources().openRawResource(OFFLINE_TEST_IMAGE);
                 filename = OFFLINE_FILENAME;
 
                 // Otherwise, download the file requested by the user.
             } else {
                 // Download the contents at the URL, which should
                 // reference an image.
-                inputStream =
-                        (InputStream) new URL(url.toString()).getContent();
+                inputStream = (InputStream)new URL(url.toString()).getContent();
                 filename = url.toString();
             }
 
             // Decode the InputStream into a Bitmap image.
-            Bitmap bitmap =
-                    BitmapFactory.decodeStream(inputStream);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
             // Bail out of we get an invalid bitmap.
             if (bitmap == null)
                 return null;
             else
                 // Create an output file and save the image into it.
-                return Utils.createDirectoryAndSaveFile(context,
-                        bitmap,
-                        filename);
+                return Utils.createDirectoryAndSaveFile(context, bitmap, filename);
         } catch (Exception e) {
             Log.e(TAG, "Exception while downloading. Returning null.");
             Log.e(TAG, e.toString());

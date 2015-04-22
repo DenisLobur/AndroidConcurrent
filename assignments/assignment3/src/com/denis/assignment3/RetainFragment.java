@@ -2,6 +2,7 @@ package com.denis.assignment3;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,11 +21,15 @@ public class RetainFragment extends Fragment {
     private ICallback callback;
     private DownloadAsyncTask downloadAsyncTask;
     private FilterAsyncTask filterAsyncTask;
+    private Context context;
 
     public interface ICallback {
         void onPreExecute();
+
         void onProgressUpdate(int percent);
+
         void onCancelled();
+
         void onPostExecute(Bitmap bitmap);
 
     }
@@ -49,22 +54,20 @@ public class RetainFragment extends Fragment {
         Log.d(TAG, "onCreate " + this.hashCode());
         setRetainInstance(true);
 
-        downloadAsyncTask = new DownloadAsyncTask();
-        filterAsyncTask = new FilterAsyncTask();
-//        downloadAsyncTask.execute()
+        context = getActivity();
     }
 
-    private class DownloadAsyncTask extends AsyncTask<Uri, Integer, Bitmap>{
+    private class DownloadAsyncTask extends AsyncTask<Uri, Integer, Bitmap> {
         @Override
         protected void onPreExecute() {
-            if(callback != null){
+            if (callback != null) {
                 callback.onPreExecute();
             }
         }
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            if(callback != null) {
+            if (callback != null) {
                 callback.onPostExecute(bitmap);
             }
         }
@@ -86,25 +89,30 @@ public class RetainFragment extends Fragment {
         @Override
         protected Bitmap doInBackground(Uri... params) {
             Log.d(TAG, "download started");
-            Uri uriToFile = Utils.downloadImage(getActivity(), params[0]);
+            Uri uriToFile = Utils.downloadImage(context, params[0]);
             String pathToFile = "file://" + uriToFile.toString();
             Bitmap bitmap = null;
             try {
-               bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(pathToFile));
+                bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(pathToFile));
             } catch (IOException e) {
                 Log.d(TAG, e.getMessage());
             }
 
-            //publishProgress(bitmap.si);
             return bitmap;
         }
     }
 
     private class FilterAsyncTask extends AsyncTask<Uri, Integer, Bitmap> {
+        @Override
+        protected void onPreExecute() {
+            if (callback != null) {
+                callback.onPreExecute();
+            }
+        }
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            if(callback != null) {
+            if (callback != null) {
                 callback.onPostExecute(bitmap);
             }
         }
@@ -112,13 +120,13 @@ public class RetainFragment extends Fragment {
         @Override
         protected Bitmap doInBackground(Uri... params) {
             Log.d(TAG, "filtering started");
-            Uri uriToFile = Utils.downloadImage(getActivity(), params[0]);
+            Uri uriToFile = Utils.downloadImage(context, params[0]);
             String pathToFile = "file://" + uriToFile.toString();
-            Uri uri = Utils.grayScaleFilter(getActivity(), Uri.parse(pathToFile));
+            Uri uri = Utils.grayScaleFilter(context, Uri.parse(pathToFile));
             pathToFile = "file://" + uri.toString();
             Bitmap bitmap = null;
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(pathToFile));
+                bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(pathToFile));
             } catch (IOException e) {
                 Log.d(TAG, e.getMessage());
             }
@@ -127,11 +135,11 @@ public class RetainFragment extends Fragment {
 
     }
 
-    public void startAsyncDownload(Uri uri){
-        downloadAsyncTask.execute(uri);
+    public void startAsyncDownload(Uri uri) {
+        new DownloadAsyncTask().execute(uri);
     }
 
     public void startAsyncFilter(Uri uri) {
-        filterAsyncTask.execute(uri);
+        new FilterAsyncTask().execute(uri);
     }
 }

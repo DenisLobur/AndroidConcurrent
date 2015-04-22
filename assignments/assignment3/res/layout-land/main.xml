@@ -29,51 +29,64 @@
             />
 
     <LinearLayout
-            android:id="@+id/buttons_holder"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:orientation="horizontal"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@id/enter_url">
-
-        <Button
-                android:id="@+id/download_btn"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:text="Download"/>
-        <Button
-                android:id="@+id/cancel_btn"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="Cancel"/>
-        <Button
-                android:id="@+id/filter_btn"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="Filter"/>
-    </LinearLayout>
-
-    <ImageView
-            android:id="@+id/image_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_below="@id/buttons_holder"
-            android:background="#778"
-            />
+            android:layout_below="@id/enter_url"
+            android:orientation="horizontal">
+
+        <LinearLayout
+                android:id="@+id/buttons_holder"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@id/enter_url">
+
+            <Button
+                    android:id="@+id/download_btn"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="Download"/>
+            <Button
+                    android:id="@+id/cancel_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="Cancel"/>
+            <Button
+                    android:id="@+id/filter_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="Filter"/>
+        </LinearLayout>
+
+        <ImageView
+                android:id="@+id/image_holder"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/buttons_holder"
+                android:background="#778"
+                />
+
+
+    </LinearLayout>
+
+
 
     <RelativeLayout
             android:id="@+id/ui_disabler"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_below="@id/buttons_holder">
+            android:layout_below="@id/enter_url">
 
         <ProgressBar
                 android:id="@+id/progress"

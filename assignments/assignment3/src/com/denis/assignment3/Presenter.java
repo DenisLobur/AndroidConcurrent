@@ -2,6 +2,7 @@ package com.denis.assignment3;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Patterns;
 
 /**
  * Created by denis on 4/21/15.
@@ -29,7 +30,7 @@ public class Presenter {
         // Do a sanity check to ensure the URL is valid, popping up a
         // toast if the URL is invalid.
         // proper code.
-        if ((url.toString().startsWith("http://") || url.toString().startsWith("https://")))
+        if ( Patterns.WEB_URL.matcher((uri == null || uri.equals("")) ? mDefaultUrl.toString() : extractedUrl).matches())
             return url;
         else {
             Utils.showToast(mContext, "Invalid URL");

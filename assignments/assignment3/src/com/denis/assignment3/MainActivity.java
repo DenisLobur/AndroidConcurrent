@@ -61,10 +61,14 @@ public class MainActivity extends Activity implements RetainFragment.ICallback, 
         switch (v.getId()) {
             case R.id.download_btn:
                 Log.d(TAG, "Download click");
-                if(isInternetOn()) {
-                    download.setEnabled(false);
-                    Uri uri = presenter.extractUrl(enterUrlEditText.getText().toString());
-                    fragment.startAsyncDownload(uri);
+                if (isInternetOn()) {
+                    Uri downloadUri = presenter.extractUrl(enterUrlEditText.getText().toString());
+                    if (downloadUri != null) {
+                        fragment.startAsyncDownload(downloadUri);
+                        download.setEnabled(false);
+                    } else {
+                        return;
+                    }
                 } else {
                     Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
                 }
@@ -78,9 +82,13 @@ public class MainActivity extends Activity implements RetainFragment.ICallback, 
             case R.id.filter_btn:
                 Log.d(TAG, "Filter click");
                 if (isInternetOn()) {
-                    filter.setEnabled(false);
-                    Uri uri2 = presenter.extractUrl(enterUrlEditText.getText().toString());
-                    fragment.startAsyncFilter(uri2);
+                    Uri filterUri = presenter.extractUrl(enterUrlEditText.getText().toString());
+                    if (filterUri != null) {
+                        fragment.startAsyncFilter(filterUri);
+                        filter.setEnabled(false);
+                    } else {
+                        return;
+                    }
                 } else {
                     Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
                 }
